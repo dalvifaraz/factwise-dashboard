@@ -1,8 +1,27 @@
 import Grid from '../components/grid';
 import './dashboard.css';
 import employeeData from '../mock/employee_details.json';
+import { useRef, useState } from 'react';
 
 const Dashboard = () => {
+  const gridRef = useRef(null);
+  const [search, setSearch] = useState('');
+
+  const onGridReady = (params) => {
+    gridRef.current = params.api;
+  };
+
+  const onSearchChange = (e) => {
+    const value = e.target.value;
+    setSearch(value);
+    gridRef.current?.setGridOption('quickFilterText', value);
+  };
+
+  const handleClear = () => {
+    setSearch('');
+
+    gridRef.current?.setGridOption('quickFilterText', '');
+  };
 
   const rowData = employeeData.employees.map((employee) => ({
     id: employee.id,
@@ -140,7 +159,35 @@ const Dashboard = () => {
   return (
     <div className='dashboard-container'>
       <h1>FactWise Dashboard</h1>
-      <Grid rowData={rowData} colDefs={colDefs} />
+      <div className='form-group'>
+        <label htmlFor='search'>Search Employees</label>
+
+        <div className='search-box'>
+          <input
+            id='search'
+            className='form-control'
+            type='text'
+            placeholder='Search by name, email, department...'
+            value={search}
+            onChange={onSearchChange}
+          />
+
+          <button
+            type='button'
+            className='clear-search'
+            onClick={handleClear}
+            style={{ display: search ? 'flex' : 'none' }}
+          >
+            ×
+          </button>
+        </div>
+      </div>
+      <Grid
+        rowData={rowData}
+        colDefs={colDefs}
+        gridRef={gridRef}
+        onGridReady={onGridReady}
+      />
     </div>
   );
 };

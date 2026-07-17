@@ -1,15 +1,19 @@
-import { AgGridReact } from 'ag-grid-react';
+import { AgGridProvider, AgGridReact } from 'ag-grid-react';
+import { AllCommunityModule } from 'ag-grid-community';
 
-const Grid = ({ rowData, colDefs }) => {
-    console.log('rowData:', rowData);
-    console.log('colDefs:', colDefs);
+const modules = [AllCommunityModule];
+
+const Grid = ({ rowData, colDefs, gridRef, onGridReady }) => {
   return (
-    <div>
-      <AgGridReact
-        rowData={rowData}
-        columnDefs={colDefs}
-        domLayout='autoHeight'
-      />
+    <div style={{ height: 'calc(100vh - 150px)', width: '100%' }}>
+      <AgGridProvider modules={modules}>
+        <AgGridReact
+          rowData={rowData}
+          columnDefs={colDefs}
+          ref={gridRef}
+          onGridReady={onGridReady}
+        />
+      </AgGridProvider>
     </div>
   );
 };
